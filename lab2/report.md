@@ -82,7 +82,7 @@ pg_ctl -D /var/db/postgres1/unb63/ -l logfile start
 ```
 listen_addresses = 'localhost'
 port = 9144
-max_connections = 101
+max_connections = 21
 
 shared_buffers = 128MB 
 temp_buffers = 16MB
@@ -93,7 +93,8 @@ fsync = on # супер-надежный и быстрый ssd
 commit_delay = 1 # не много не мало
 
 log_min_messages = error
-
+log_connections = on
+log_disconnections = on
 ```
 
 #### Пояснение по каждому из параметров
