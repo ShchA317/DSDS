@@ -71,7 +71,7 @@
 создание кластера и запуск:
 
 ```bash
-initdb --locale=ru_RU.CP1251 -D unb63/ --username=postgres1 -E WIN1251D
+initdb --locale=ru_RU.CP1251 -D unb63/ --username=postgres1 -E WIN1251
 pg_ctl -D /var/db/postgres1/unb63/ -l logfile start
 ```
 
@@ -130,5 +130,15 @@ log_disconnections = on
 ### Этап 3:
 
 ```
+mkdir tym66 fwb3 raz87
 
 ```
+
+в psql:
+
+```sql
+CREATE TABLESPACE idx LOCATION tym66;
+CREATE TABLESPACE tables LOCATION fwb3;
+CREATE TABLESPACE vuies LOCATION raz87;
+```
+
