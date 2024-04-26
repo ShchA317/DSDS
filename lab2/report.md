@@ -131,14 +131,54 @@ log_disconnections = on
 
 ```
 mkdir tym66 fwb3 raz87
+createdb -T template1 illpinkexam -p 9144
+psql -U postgres1 -d illpinkexam -p 9144
 
+ALTER USER illpinkexam with superuser;
+EXIT
+
+psql -U illpinkexam -p 9144
 ```
 
 в psql:
 
 ```sql
-CREATE TABLESPACE idx LOCATION tym66;
-CREATE TABLESPACE tables LOCATION fwb3;
-CREATE TABLESPACE vuies LOCATION raz87;
+CREATE TABLESPACE idx LOCATION '/var/db/postgres1/tym66';
+CREATE TABLESPACE tables LOCATION '/var/db/postgres1/fwb3';
+CREATE TABLESPACE vieWs LOCATION '/var/db/postgres1/raz87';
+
+CREATE ROLE illpinkexam1 WITH LOGIN PASSWORD '123456';
+GRANT ALL PRIVILEGES ON DATABASE illpinkexam TO illpinkexam1;
+
+CREATE TABLE tym66_table (id INT, name VARCHAR(255)) TABLESPACE tables;
+CREATE TABLE fwb3_table (id INT, description VARCHAR(255)) TABLESPACE tables;
+CREATE TABLE raz87_table (id INT, data BYTEA) TABLESPACE tables;
+
+CREATE VIEW tym66_view AS
+SELECT * FROM tym66_table;
+
+CREATE INDEX idx_fwb3_table_description ON fwb3_table (description);
+
+-- Tym66_table
+INSERT INTO tym66_table (id, name) VALUES (1, 'Test 1');
+INSERT INTO tym66_table (id, name) VALUES (2, 'Test 2');
+INSERT INTO tym66_table (id, name) VALUES (3, 'Test 3');
+
+-- Fwb3_table
+INSERT INTO fwb3_table (id, description) VALUES (1, 'Description 1');
+INSERT INTO fwb3_table (id, description) VALUES (2, 'Description 2');
+INSERT INTO fwb3_table (id, description) VALUES (3, 'Description 3');
+
+-- Raz87_table
+INSERT INTO raz87_table (id, data) VALUES (1, E'Data 1');
+INSERT INTO raz87_table (id, data) VALUES (2, E'Data 2');
+INSERT INTO raz87_table (id, data) VALUES (3, E'Data 3');
+
+SELECT * FROM tym66_table;
+SELECT * FROM fwb3_table;
+SELECT * FROM raz87_table;
+
+\db
+\d+
 ```
 
