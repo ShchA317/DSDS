@@ -84,7 +84,7 @@ listen_addresses = 'localhost'
 port = 9144
 max_connections = 21
 
-shared_buffers = 128MB 
+shared_buffers = 512MB 
 temp_buffers = 16MB
 work_mem = 8MB
 checkpoint_timeout = 50min
