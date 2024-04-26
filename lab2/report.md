@@ -229,7 +229,7 @@ SELECT * FROM raz87_table;
 
 вывести таблицы и пользовательские пространства можно при помощи запроса:
 
-```
+```sql
 select pc.relname, spcname
 from pg_class pc
     join pg_tablespace pt on pt.oid=pc.reltablespace
