@@ -227,8 +227,25 @@ SELECT * FROM raz87_table;
 
 ```
 
-вывести таблицы и пользовательские пространства можно с помощью psql, командой
+вывести таблицы и пользовательские пространства можно при помощи запроса:
 
 ```
+select pc.relname, spcname
+from pg_class pc
+    join pg_tablespace pt on pt.oid=pc.reltablespace
+where spcname in ('tym66', 'raz87', 'fwb3'); 
+```
+
+полученное отношение 
 
 ```
+       relname        | spcname 
+----------------------+---------
+ tym66_table          | tym66
+ fwb3_table           | fwb3
+ pg_toast_16402       | raz87
+ pg_toast_16402_index | raz87
+ raz87_table          | raz87
+```
+
+
