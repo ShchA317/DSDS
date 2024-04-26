@@ -85,7 +85,9 @@ pg_ctl -D /var/db/postgres1/unb63/ -l logfile start
 # "local" is for Unix domain socket connections only
 # local   all             all                                     trust
 # IPv4 local connections:
-host    all             all             127.0.0.1/32           password 
+
+host    all             all             127.0.0.1/32           password
+
 # IPv6 local connections:
 # host    all             all             ::1/128                 trust
 # Allow replication connections from localhost, by a user with the
@@ -153,32 +155,30 @@ log_disconnections = on
 ```
 mkdir tym66 fwb3 raz87
 createdb -T template1 illpinkexam -p 9144
-psql -U postgres1 -d illpinkexam -p 9144
-
-ALTER USER illpinkexam with superuser;
-EXIT
-
-psql -U illpinkexam -p 9144
+psql -U postgres1 -d illpinkexam -p 9144 -h 127.0.0.1
 ```
 
 в psql:
 
 ```sql
-CREATE TABLESPACE idx LOCATION '/var/db/postgres1/tym66';
-CREATE TABLESPACE tables LOCATION '/var/db/postgres1/fwb3';
-CREATE TABLESPACE vieWs LOCATION '/var/db/postgres1/raz87';
+CREATE TABLESPACE tym66 LOCATION '/var/db/postgres1/tym66';
+CREATE TABLESPACE fwb3 LOCATION '/var/db/postgres1/fwb3';
+CREATE TABLESPACE raz87 LOCATION '/var/db/postgres1/raz87';
 
 CREATE ROLE illpinkexam1 WITH LOGIN PASSWORD '123456';
 GRANT ALL PRIVILEGES ON DATABASE illpinkexam TO illpinkexam1;
 
-CREATE TABLE tym66_table (id INT, name VARCHAR(255)) TABLESPACE tables;
-CREATE TABLE fwb3_table (id INT, description VARCHAR(255)) TABLESPACE tables;
-CREATE TABLE raz87_table (id INT, data BYTEA) TABLESPACE tables;
+GRANT ALL PRIVILEGES ON TABLESPACE tym66 TO illpinkexam1;
+GRANT ALL PRIVILEGES ON TABLESPACE fwb3 TO illpinkexam1;
+GRANT ALL PRIVILEGES ON TABLESPACE raz87 TO illpinkexam1;
+```
 
-CREATE VIEW tym66_view AS
-SELECT * FROM tym66_table;
+залогившись под illpinkexam1: 
 
-CREATE INDEX idx_fwb3_table_description ON fwb3_table (description);
+```sql
+CREATE TABLE tym66_table (id INT, name VARCHAR(255)) TABLESPACE tym66;
+CREATE TABLE fwb3_table (id INT, description VARCHAR(255)) TABLESPACE fwb3;
+CREATE TABLE raz87_table (id INT, data BYTEA) TABLESPACE raz87;
 
 -- Tym66_table
 INSERT INTO tym66_table (id, name) VALUES (1, 'Test 1');
@@ -194,12 +194,41 @@ INSERT INTO fwb3_table (id, description) VALUES (3, 'Description 3');
 INSERT INTO raz87_table (id, data) VALUES (1, E'Data 1');
 INSERT INTO raz87_table (id, data) VALUES (2, E'Data 2');
 INSERT INTO raz87_table (id, data) VALUES (3, E'Data 3');
+```
 
+проверяем, что в данные вставлены: 
+
+```sql
 SELECT * FROM tym66_table;
 SELECT * FROM fwb3_table;
 SELECT * FROM raz87_table;
-
-\db
-\d+
 ```
 
+```
+ id |  name  
+----+--------
+  1 | Test 1
+  2 | Test 2
+  3 | Test 3
+(3 строки)
+
+ id |  description  
+----+---------------
+  1 | Description 1
+  2 | Description 2
+  3 | Description 3
+(3 строки)
+
+ id |      data      
+----+----------------
+  1 | \x446174612031
+  2 | \x446174612032
+  3 | \x446174612033
+
+```
+
+вывести таблицы и пользовательские пространства можно с помощью psql, командой
+
+```
+
+```
