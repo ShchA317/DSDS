@@ -230,22 +230,19 @@ SELECT * FROM raz87_table;
 вывести таблицы и пользовательские пространства можно при помощи запроса:
 
 ```sql
-select pc.relname, spcname
-from pg_class pc
-    join pg_tablespace pt on pt.oid=pc.reltablespace
-where spcname in ('tym66', 'raz87', 'fwb3'); 
+select tablename, tablespace
+from pg_tables
+where schemaname='public';
 ```
 
 полученное отношение 
 
 ```
-       relname        | spcname 
-----------------------+---------
- tym66_table          | tym66
- fwb3_table           | fwb3
- pg_toast_16402       | raz87
- pg_toast_16402_index | raz87
- raz87_table          | raz87
+  tablename  | tablespace 
+-------------+------------
+ tym66_table | tym66
+ fwb3_table  | fwb3
+ raz87_table | raz87
 ```
 
 
