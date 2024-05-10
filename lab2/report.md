@@ -115,6 +115,7 @@ effective_cache_size = 1GB # 1/2 всего объема
 fsync = on # супер-надежный и быстрый ssd
 commit_delay = 1 # не много не мало
 
+log_directory = '$HOME/uxc31'
 log_min_messages = error
 log_connections = on
 log_disconnections = on
