@@ -126,8 +126,18 @@ UPDATE tym66_table SET fwb3_id = 999 WHERE id = 4;
 INSERT INTO tym66_table (id, name, fwb3_id) VALUES (7, 'Test 7', 999);
 ``` 
 
-восстанавливаем бд из резервной копии:
+```                                     
+wal_level = replica
+archive_mode = on
 
+archive_command = 'scp %p postgres2@pg192:/var/db/postgres2/wal_backup/%f'
 ```
 
+восстанавливаем бд из резервной копии. в :
+
 ```
+wal_level = replica
+archive_mode = on
+archive_command = 'scp %p postgres2@pg192:/var/db/postgres2/wal_backup/%f'
+```
+
