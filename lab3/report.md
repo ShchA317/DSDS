@@ -47,6 +47,7 @@ ssh-copy-id -i ~/.ssh/id_rsa.pub postgres2@pg192
 current_date=$(date +"%Y-%m-%d")
 current_time=$(date +"%H-%M-%S")
 backup_file="/var/db/postgres2/backups/backup_${current_date}_${current_time}.sql.gz"
+scp /var/db/postgres1/unb63 postgres2@192:backups
 pg_dump -U postgres1 -d illpinkexam -p 9144 | gzip | ssh postgres2@pg192 "cat > $backup_file"
 ```
 
@@ -83,8 +84,50 @@ psql -f script.sql -U postgres2 -d illpinkexam
 ## Этап 3
 
 ```shell
+scp postgres2@192:backups/unb63 /var/db/postgres1/unb63
 ssh postgres2@192
 latest_backup=$(ls -t /var/db/postgres2/backups/*.sql.gz | head -1) && exit
 scp postgres2@192:latest_backup script.sql.gz
 gunzip -c $latest_backup > ~/script.sql
+```
+
+## Этап 4
+
+добавим внешние ключи и ненмого данных 
+
+```sql
+ALTER TABLE tym66_table ADD COLUMN fwb3_id INT;
+
+-- Updating existing records with appropriate fwb3_id values
+UPDATE tym66_table SET fwb3_id = 1 WHERE id = 1;
+UPDATE tym66_table SET fwb3_id = 2 WHERE id = 2;
+UPDATE tym66_table SET fwb3_id = 3 WHERE id = 3;
+
+-- Adding the foreign key constraint
+ALTER TABLE tym66_table 
+ADD CONSTRAINT fk_fwb3
+FOREIGN KEY (fwb3_id) REFERENCES fwb3_table(id);
+
+
+INSERT INTO tym66_table (id, name, fwb3_id) VALUES (4, 'Test 4', 1);
+INSERT INTO tym66_table (id, name, fwb3_id) VALUES (5, 'Test 5', 2);
+INSERT INTO tym66_table (id, name, fwb3_id) VALUES (6, 'Test 6', 3);
+
+INSERT INTO fwb3_table (id, description) VALUES (4, 'Description 4');
+INSERT INTO fwb3_table (id, description) VALUES (5, 'Description 5');
+INSERT INTO fwb3_table (id, description) VALUES (6, 'Description 6');
+```
+
+не дожидаясь отработки крона закидываем бэкап (скрипт из первого этапа), затем "ломаем":
+
+```sql
+SELECT NOW() AS current_time;
+UPDATE tym66_table SET fwb3_id = 999 WHERE id = 4;
+INSERT INTO tym66_table (id, name, fwb3_id) VALUES (7, 'Test 7', 999);
+``` 
+
+восстанавливаем бд из резервной копии:
+
+```
+
 ```
