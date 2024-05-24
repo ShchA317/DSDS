@@ -46,7 +46,7 @@ ssh-copy-id -i ~/.ssh/id_rsa.pub postgres2@pg192
 ```shell
 current_date=$(date +"%Y-%m-%d")
 current_time=$(date +"%H-%M-%S")
-backup_file="/var/db/postgres2/backups/backup_${current_date}_${current_time}.sql"
+backup_file="/var/db/postgres2/backups/backup_${current_date}_${current_time}.sql.gz"
 pg_dump -U postgres1 -d illpinkexam -p 9144 | gzip | ssh postgres2@pg192 "cat > $backup_file"
 ```
 
@@ -67,3 +67,24 @@ pg_dump -U postgres1 -d illpinkexam -p 9144 | gzip | ssh postgres2@pg192 "cat > 
 Размер полной резервной копии: 800 МБ + 750 МБ = `1 550 МБ`
 
 Объём резервных копий за месяц: 1 550 * 30 = `46 500 МБ`
+
+
+## Этап 2. Резервное копирование
+
+```shell
+initdb --locale=ru_RU.CP1251 -D unb63/ --username=postgres2 -E WIN1251
+pg_ctl -D ~/unb63/ -l logfile start
+latest_backup=$(ls -t /var/db/postgres2/backups/*.sql.gz | head -1)
+gunzip -c $latest_backup > ~/script.sql
+psql -f script.sql -U postgres2 -d illpinkexam
+```
+
+
+## Этап 3
+
+```shell
+ssh postgres2@192
+latest_backup=$(ls -t /var/db/postgres2/backups/*.sql.gz | head -1) && exit
+scp postgres2@192:latest_backup script.sql.gz
+gunzip -c $latest_backup > ~/script.sql
+```
